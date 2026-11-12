@@ -1,0 +1,17 @@
+[
+  {"id":1,"count":4,"count_adults":3,"count_children":1,"start_date":"--06-30","nights":7,"price_per_day":null,"remarks":""},
+  {"id":2,"count":5,"count_adults":2,"count_children":3,"start_date":"--07-11","nights":12,"price_per_day":null,"remarks":"Две двуспальные кровати допустимы; рядом центр и море; эконом"},
+  {"id":3,"count":6,"count_adults":2,"count_children":4,"start_date":"2018-05-29","nights":11,"price_per_day":null,"remarks":"Кухня; недалеко от моря"},
+  {"id":4,"count":2,"count_adults":2,"count_children":0,"start_date":"--09-07","nights":7,"price_per_day":700,"remarks":"Лазаревское; номер с удобствами; не менее недели"},
+  {"id":5,"count":3,"count_adults":2,"count_children":1,"start_date":"--07-15","nights":10,"price_per_day":null,"remarks":"Собака; Чёрное море, кроме Крыма и Анапы"},
+  {"id":6,"count":3,"count_adults":2,"count_children":1,"start_date":null,"nights":10,"price_per_day":null,"remarks":"Пицунда; песчаный пляж; недалеко от моря; месяц заезда неизвестен"},
+  {"id":7,"count":4,"count_adults":4,"count_children":0,"start_date":"--09-05","nights":3,"price_per_day":null,"remarks":"Лазаревское или Солоники; бюджетное жильё"},
+  {"id":8,"count":3,"count_adults":3,"count_children":0,"start_date":"--08-18","nights":7,"price_per_day":null,"remarks":"Частный сектор; парковка легкового автомобиля"},
+  {"id":9,"count":4,"count_adults":2,"count_children":2,"start_date":"--08-06","nights":7,"price_per_day":2000,"remarks":"2000 за номер или 500 с человека"},
+  {"id":10,"count":3,"count_adults":2,"count_children":1,"start_date":"--04-25","nights":10,"price_per_day":null,"remarks":"Душ и туалет в номере"},
+  {"id":11,"count":2,"count_adults":2,"count_children":0,"start_date":"--07-24","nights":8,"price_per_day":null,"remarks":"Эконом"},
+  {"id":12,"count":2,"count_adults":2,"count_children":0,"start_date":"--07-04","nights":9,"price_per_day":null,"remarks":"Частный сектор; эконом; Переулок Победы, Свирская или Седова"},
+  {"id":13,"count":4,"count_adults":3,"count_children":1,"start_date":"--07-16","nights":11,"price_per_day":null,"remarks":"Две комнаты или два двухместных номера; удобства и бассейн"},
+  {"id":14,"count":1,"count_adults":1,"count_children":0,"start_date":"--05-26","nights":19,"price_per_day":null,"remarks":"Две маленькие собаки; рядом санаторий Бирюза"},
+  {"id":15,"count":2,"count_adults":2,"count_children":0,"start_date":"--07-02","nights":8,"price_per_day":2000,"remarks":"Лазаревское; удобства; вблизи моря, не окраина"}
+]
