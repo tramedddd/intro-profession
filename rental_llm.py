@@ -57,13 +57,12 @@ def make_model():
     if not ca_path and (ROOT / 'certs/russian_trusted_root_ca_pem.crt').exists():
         ca_path = str(ROOT / 'certs/russian_trusted_root_ca_pem.crt')
     kwargs = dict(credentials=credentials, model=os.getenv('GIGACHAT_MODEL', 'GigaChat-2'),
+                  base_url=os.getenv('GIGACHAT_BASE_URL', 'https://gigachat.devices.sberbank.ru/api/v1/'),
                   scope=os.getenv('GIGACHAT_SCOPE', 'GIGACHAT_API_PERS'),
                   temperature=0, max_tokens=1200, timeout=20, max_retries=0,
                   verify_ssl_certs=True)
     if ca_path:
         kwargs['ca_bundle_file'] = ca_path
-    if os.getenv('GIGACHAT_BASE_URL'):
-        kwargs['base_url'] = os.environ['GIGACHAT_BASE_URL']
     return GigaChat(**kwargs)
 
 
@@ -75,7 +74,7 @@ def basic_chain(model):
     return prompt | model | StrOutputParser()
 
 
-def structured_chain(model):
+def structured_chain(model, raw=False):
     parser = PydanticOutputParser(pydantic_object=RentalInfo)
     prompt = ChatPromptTemplate.from_messages([
         ('system', '''Ты извлекаешь данные из заявок на аренду жилья.
@@ -107,6 +106,8 @@ def structured_chain(model):
         format_instructions=parser.get_format_instructions(),
         example_one=json.dumps(dict(count=3,count_adults=2,count_children=1,start_date='--10-03',nights=6,price_per_day=2700,remarks='Нужна кроватка'), ensure_ascii=False),
         example_two=json.dumps(dict(count=1,count_adults=1,count_children=0,start_date='2027-02-14',nights=3,price_per_day=None,remarks=''), ensure_ascii=False))
+    if raw:
+        return prompt | model | StrOutputParser(), parser
     return prompt | model | parser
 
 
@@ -121,10 +122,10 @@ def safe_error(error):
     # Не сохраняем тело ответа, токены, headers, URL с параметрами или исходное исключение.
     kind = type(error).__name__
     message = str(error).lower()
-    if 'certificate' in message or 'ssl' in message:
-        return f'{kind}: ошибка TLS/сертификата; см. README.'
     if 'timeout' in kind.lower() or 'timed out' in message:
         return f'{kind}: истекло время подключения к GigaChat.'
+    if 'certificate' in message or 'ssl' in message:
+        return f'{kind}: ошибка TLS/сертификата; см. README.'
     if any(x in message for x in ['401', '403', 'unauthorized', 'credentials']):
         return f'{kind}: проверьте ключ, scope и доступ к API.'
     return f'{kind}: запрос или валидация ответа завершились ошибкой.'
@@ -183,6 +184,7 @@ def run_experiment(advanced=False, with_metrics=True):
         except Exception as error:
             predictions.append(None)
             errors.append(safe_error(error))
+        print(f'Базовая техника: обработано {i+1}/15', flush=True)
     df['result'], df['error'] = predictions, errors
     df.to_csv(results_dir / 'rental_with_results.csv',index=False,encoding='utf-8-sig')
     status['successful_basic'] = sum(not e for e in errors)
@@ -197,6 +199,7 @@ def run_experiment(advanced=False, with_metrics=True):
                 records.append({'id': i,'status':'ok','parsed':result.model_dump()})
             except Exception as error:
                 records.append({'id': i,'status':'error','error':safe_error(error),'parsed':None})
+            print(f'Few-shot JSON: обработано {i}/15', flush=True)
         (results_dir / 'structured_results.json').write_text(json.dumps(records,ensure_ascii=False,indent=2),encoding='utf-8')
         labels = json.loads((ROOT / 'rental_18_labels.json').read_text(encoding='utf-8'))
         status['structured'] = evaluate_structured(records, labels)
