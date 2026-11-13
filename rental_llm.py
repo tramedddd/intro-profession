@@ -1,4 +1,3 @@
-"""Цепочки LangChain и честная оценка извлечения данных из заявок."""
 from datetime import datetime
 import json
 import logging
@@ -118,7 +117,7 @@ def parse_count(raw):
 
 
 def safe_error(error):
-    # Не сохраняем тело ответа, токены, headers, URL с параметрами или исходное исключение.
+
     kind = type(error).__name__
     message = str(error).lower()
     if 'certificate' in message or 'ssl' in message:
@@ -143,8 +142,8 @@ def evaluate_structured(records, labels):
     fields = ['count', *EXTRA_FIELDS]
     metrics = {}
     for field in fields:
-        # При ошибке запроса/валидации все поля строки считаются ошибочными,
-        # даже если эталонное значение поля равно null.
+
+
         correct = sum(r['status'] == 'ok' and r['parsed'][field] == label[field]
                       for r, label in zip(records, labels))
         metrics[field] = {'correct': correct, 'total': 15, 'accuracy': correct/15}
@@ -159,7 +158,7 @@ def run_experiment(advanced=False, with_metrics=True):
     df = pd.read_csv(ROOT / 'rental_18.csv', sep=';')
     if len(df) != 15 or set(df.columns) != {'amount', 'text'}:
         raise ValueError('Ожидался вариант 18: 15 строк и поля amount;text')
-    # Не отправляем эталон amount или ручную разметку модели — только text.
+
     logging.getLogger('httpx').setLevel(logging.WARNING)
     logging.getLogger('gigachat').setLevel(logging.WARNING)
     status = {'variant': 18, 'total_requests': 15, 'model': os.getenv('GIGACHAT_MODEL','GigaChat-2'),
