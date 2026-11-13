@@ -1,9 +1,8 @@
-"""OMDb: обработка HTTP, ошибок сервиса и неполных ответов."""
 import requests
 
 
 class MovieAPIError(RuntimeError):
-    """Сообщение, которое можно безопасно показать пользователю."""
+    pass
 
 
 def fetch_movie(title, api_key, *, session=requests):
@@ -30,7 +29,7 @@ def fetch_movie(title, api_key, *, session=requests):
     if not isinstance(data, dict):
         raise MovieAPIError('OMDb вернул неожиданный формат ответа.')
     if data.get('Response') == 'False':
-        # Не отражаем произвольный ответ сервиса: он может содержать входные данные.
+
         reason = str(data.get('Error', '')).lower()
         if 'key' in reason or 'limit' in reason:
             raise MovieAPIError('Проверьте ключ OMDb и доступную квоту запросов.')
